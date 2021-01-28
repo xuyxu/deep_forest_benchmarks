@@ -1,0 +1,13 @@
+{
+    "ijcnn1": 1200,
+    "pendigits": 800,
+    "letter": 400,
+    "connect-4": 800,
+    "sector": 800,
+    "covtype": 800,
+    "susy": 400,
+    "higgs": 800,
+    "usps": 1600,
+    "mnist": 14000,
+    "fashion mnist": 12000
+}
