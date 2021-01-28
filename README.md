@@ -1,3 +1,7 @@
 # deep_forest_benchmarks
  
-TBA.
+### For Deep Forest
+* Data Format: {Training Time} {Evaluating Time} {Testing Acc} {n_layers}
+
+### For Other Benchmarks
+* Data Format: {Training Time} {Evaluating Time} {Testing Acc}
