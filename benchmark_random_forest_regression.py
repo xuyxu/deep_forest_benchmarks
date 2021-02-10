@@ -1,8 +1,8 @@
 import time
 import json
 import loader
-from sklearn.metrics import accuracy_score
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import mean_squared_error
+from sklearn.ensemble import RandomForestRegressor
 
 
 if __name__ == "__main__":
@@ -10,13 +10,10 @@ if __name__ == "__main__":
     n_jobs = -1
     random_states = [42, 4242, 424242, 42424242, 4242424242]  # 5 trials
 
-    load_funcs = loader.load_all()
+    load_funcs = loader.load_regression_all()
     config = json.load(open("config.json", "r"))
     
     for dataset, func in load_funcs.items():
-        
-        if dataset in ("higgs"):  # run out of memory on higgs
-            continue
 
         if dataset not in config:
             msg = "Missing configuration in json file for dataset = {}."
@@ -32,9 +29,9 @@ if __name__ == "__main__":
                 dataset, idx)
             print(msg)
             
-            model = RandomForestClassifier(n_estimators=n_trees,
-                                           n_jobs=n_jobs,
-                                           random_state=random_state)
+            model = RandomForestRegressor(n_estimators=n_trees,
+                                          n_jobs=n_jobs,
+                                          random_state=random_state)
 
             tic = time.time()
             model.fit(X_train, y_train)
@@ -46,16 +43,16 @@ if __name__ == "__main__":
             toc = time.time()
             testing_time = toc - tic
             
-            testing_acc = accuracy_score(y_test, y_pred)
+            testing_mse = mean_squared_error(y_test, y_pred)
             
-            records.append((training_time, testing_time, testing_acc))
-        
+            records.append((training_time, testing_time, testing_mse))
+
         # Write a log file
-        with open("{}_random_forest.txt".format(dataset), 'w') as file:
-            for training_time, testing_time, testing_acc in records:
+        with open("{}_random_forest_regression.txt".format(dataset), 'w') as file:
+            for training_time, testing_time, testing_mse in records:
                 string = "{:.5f}\t{:.5f}\t{:.5f}\n".format(training_time,
                                                            testing_time,
-                                                           testing_acc)
+                                                           testing_mse)
                 file.write(string)
             file.close()
         

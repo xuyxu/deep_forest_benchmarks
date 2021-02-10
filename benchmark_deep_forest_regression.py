@@ -1,8 +1,8 @@
 import time
 import loader
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import mean_squared_error
 
-from deepforest import CascadeForestClassifier
+from deepforest import CascadeForestRegressor
 
 
 if __name__ == "__main__":
@@ -18,17 +18,14 @@ if __name__ == "__main__":
     use_predictor = False
     predictor = "forest"
     n_tolerant_rounds = 2
-    partial_mode = True
+    partial_mode = False
     delta = 1e-5
     n_jobs = -1
-    verbose = 2
+    verbose = 1
     random_states = [42, 4242, 424242, 42424242, 4242424242]  # 5 trials
-    load_funcs = loader.load_all()
+    load_funcs = loader.load_regression_all()
 
     for dataset, func in load_funcs.items():
-
-        if dataset in ["mnist", "fashion mnist"]:
-            n_trees = 500
 
         X_train, y_train, X_test, y_test = func()
         records = []
@@ -38,7 +35,7 @@ if __name__ == "__main__":
             msg = "Currently processing {} with trial {}..."
             print(msg.format(dataset, idx))
 
-            model = CascadeForestClassifier(
+            model = CascadeForestRegressor(
                 n_bins=n_bins,
                 bin_subsample=bin_subsample,
                 max_layers=max_layers,
@@ -66,15 +63,15 @@ if __name__ == "__main__":
             toc = time.time()
             testing_time = toc - tic
             
-            testing_acc = accuracy_score(y_test, y_pred)
-            records.append((training_time, testing_time, testing_acc, len(model)))
+            testing_mse = mean_squared_error(y_test, y_pred)
+            records.append((training_time, testing_time, testing_mse, len(model)))
             model.clean()
 
         # Writing
-        with open("{}_deep_forest.txt".format(dataset), 'w') as file:
-            for training_time, testing_time, testing_acc, n_layers in records:
+        with open("{}_deep_forest_regression.txt".format(dataset), 'w') as file:
+            for training_time, testing_time, testing_mse, n_layers in records:
                 string = "{:.5f}\t{:.5f}\t{:.5f}\t{}\n".format(
-                    training_time, testing_time, testing_acc, n_layers
+                    training_time, testing_time, testing_mse, n_layers
                 )
                 file.write(string)
             file.close()

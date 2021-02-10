@@ -2,19 +2,20 @@ import time
 import json
 import loader
 import numpy as np
-from sklearn.metrics import accuracy_score
-from lightgbm import LGBMClassifier
+from sklearn.metrics import mean_squared_error
+from sklearn.experimental import enable_hist_gradient_boosting
+from sklearn.ensemble import HistGradientBoostingRegressor
 
 
 if __name__ == "__main__":
 
-    # No randomness is introduced in LightGBM when `X_train` and `X_test`
+    # No randomness is introduced in HGBDT when `X_train` and `X_test`
     # are fixed.
     n_jobs = -1
-    load_funcs = loader.load_all()
+    load_funcs = loader.load_regression_all()
     config = json.load(open("config.json", "r"))
     records = []
-    
+
     for dataset, func in load_funcs.items():
 
         if dataset not in config:
@@ -23,14 +24,14 @@ if __name__ == "__main__":
 
         X_train, y_train, X_test, y_test = func()
         n_classes = np.unique(y_train).shape[0]
-        objective = 'multiclass' if n_classes > 2 else 'binary'
         n_trees = config[dataset]
-        n_estimators = n_trees // n_classes if objective == 'multiclass' else n_trees
         print("Currently processing {}...".format(dataset))
-        
-        model = LGBMClassifier(boosting_type='gbdt',
-                               n_estimators=n_estimators,
-                               n_jobs=n_jobs)
+
+        model = HistGradientBoostingRegressor(
+            max_iter=n_trees,
+            loss="least_squares",
+            validation_fraction=None
+        )
 
         tic = time.time()
         model.fit(X_train, y_train)
@@ -42,15 +43,15 @@ if __name__ == "__main__":
         toc = time.time()
         testing_time = toc - tic
         
-        testing_acc = accuracy_score(y_test, y_pred)
+        testing_mse = mean_squared_error(y_test, y_pred)
         
-        records.append((dataset, training_time, testing_time, testing_acc))
+        records.append((dataset, training_time, testing_time, testing_mse))
 
     # Write a log file
-    with open("all_lightgbm.txt", 'w') as file:
-        for dataset, training_time, testing_time, testing_acc in records:
+    with open("all_hgbdt_regression.txt", 'w') as file:
+        for dataset, training_time, testing_time, testing_mse in records:
             string = "{}\t{:.5f}\t{:.5f}\t{:.5f}\n".format(
-                dataset, training_time, testing_time, testing_acc)
+                dataset, training_time, testing_time, testing_mse)
             file.write(string)
         file.close()
         

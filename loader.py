@@ -6,6 +6,7 @@ from sklearn.datasets import load_svmlight_file
 from keras.datasets import (mnist, fashion_mnist, cifar10)
 from sklearn.utils import check_random_state
 from sklearn.model_selection import train_test_split
+from sklearn.datasets import load_boston, load_diabetes
 
 
 mem = Memory('./cache')
@@ -13,7 +14,7 @@ mem = Memory('./cache')
 
 def load_all():
     
-    load_dict ={
+    load_dict = {
         'ijcnn1': load_ijcnn1,
         'pendigits': load_pendigits,
         'letter': load_letter,
@@ -27,6 +28,18 @@ def load_all():
         'fashion mnist': load_fashionmnist
     }
     
+    return load_dict
+
+
+def load_regression_all():
+
+    load_dict = {
+        "abalone": load_abalone,
+        "cpusmall": load_cpusmall,
+        "boston": load_boston_wrap,
+        "diabetes": load_diabetes_wrap
+    }
+
     return load_dict
 
 
@@ -240,7 +253,7 @@ def load_aloi(test_size=0.33, random_state=0):
 
 
 def load_abalone():
-    data = load_svmlight_file('../../Dataset/LIBSVM/abalone')
+    data = load_svmlight_file('../Dataset/LIBSVM/abalone')
     X = np.asanyarray(data[0].toarray(), order='C')
     y = data[1]
 
@@ -250,10 +263,10 @@ def load_abalone():
     return X_train, y_train, X_test, y_test
 
 
-def load_ailerons():
-    data = np.loadtxt("../../Dataset/ailerons.data", delimiter=",")
-    X = np.asanyarray(data[:, :-1], order='C')
-    y = data[:, -1]
+def load_cpusmall():
+    data = load_svmlight_file('../Dataset/LIBSVM/cpusmall')
+    X = np.asanyarray(data[0].toarray(), order='C')
+    y = data[1]
 
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=0.33, random_state=0)
@@ -261,30 +274,15 @@ def load_ailerons():
     return X_train, y_train, X_test, y_test
 
 
-def load_ct_slice():
-    data = pd.read_csv("../../Dataset/slice_localization_data.csv").to_numpy()
-    X = np.asanyarray(data[:, 1:-1], order='C')
-    y = data[:, -1]
-
-    X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.33, random_state=0)
+def load_boston_wrap():
+    X, y = load_boston(return_X_y=True)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=0)
 
     return X_train, y_train, X_test, y_test
 
-def load_sarcos():
-    train = scio.loadmat("../../Dataset/sarcos_inv.mat")["sarcos_inv"]
-    test = scio.loadmat("../../Dataset/sarcos_inv_test.mat")["sarcos_inv_test"]
-    
-    X_train, y_train = train[:, :-7], train[:, -7:]
-    X_test, y_test = test[:, :-7], test[:, -7:]
-    
-    return X_train, y_train, X_test, y_test
 
-def load_yearpredictionmsd():
-    train = load_svmlight_file('../../Dataset/LIBSVM/yearpredictionmsd_training')
-    test = load_svmlight_file('../../Dataset/LIBSVM/yearpredictionmsd_testing')
-    
-    X_train, X_test = train[0].toarray(), test[0].toarray()
-    y_train, y_test = train[1], test[1]
-    
+def load_diabetes_wrap():
+    X, y = load_diabetes(return_X_y=True)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=0)
+
     return X_train, y_train, X_test, y_test

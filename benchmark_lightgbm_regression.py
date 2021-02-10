@@ -2,16 +2,16 @@ import time
 import json
 import loader
 import numpy as np
-from sklearn.metrics import accuracy_score
-from xgboost import XGBClassifier
+from sklearn.metrics import mean_squared_error
+from lightgbm import LGBMRegressor
 
 
 if __name__ == "__main__":
 
-    # No randomness is introduced in XGBoost when `X_train` and `X_test`
+    # No randomness is introduced in LightGBM when `X_train` and `X_test`
     # are fixed.
-    n_jobs = 0  # See issue #5703 in XGBoost
-    load_funcs = loader.load_all()
+    n_jobs = -1
+    load_funcs = loader.load_regression_all()
     config = json.load(open("config.json", "r"))
     records = []
     
@@ -23,14 +23,11 @@ if __name__ == "__main__":
 
         X_train, y_train, X_test, y_test = func()
         n_classes = np.unique(y_train).shape[0]
-        objective = 'multi:softmax' if n_classes > 2 else 'binary:logistic'
-        n_trees = config[dataset]
-        n_estimators = n_trees // n_classes if objective == 'multi:softmax' else n_trees
+        n_estimators = config[dataset]
         print("Currently processing {}...".format(dataset))
-
-        model = XGBClassifier(n_estimators=n_estimators,
-                              objective=objective,
-                              tree_method='hist',
+        
+        model = LGBMRegressor(boosting_type='gbdt',
+                              n_estimators=n_estimators,
                               n_jobs=n_jobs)
 
         tic = time.time()
@@ -43,14 +40,15 @@ if __name__ == "__main__":
         toc = time.time()
         testing_time = toc - tic
         
-        testing_acc = accuracy_score(y_test, y_pred)
+        testing_mse = mean_squared_error(y_test, y_pred)
         
-        records.append((dataset, training_time, testing_time, testing_acc))
+        records.append((dataset, training_time, testing_time, testing_mse))
 
     # Write a log file
-    with open("all_xgboost_hist.txt", 'w') as file:
-        for dataset, training_time, testing_time, testing_acc in records:
+    with open("all_lightgbm_regression.txt", 'w') as file:
+        for dataset, training_time, testing_time, testing_mse in records:
             string = "{}\t{:.5f}\t{:.5f}\t{:.5f}\n".format(
-                dataset, training_time, testing_time, testing_acc)
+                dataset, training_time, testing_time, testing_mse)
             file.write(string)
         file.close()
+        

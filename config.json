@@ -9,5 +9,9 @@
     "higgs": 800,
     "usps": 1600,
     "mnist": 14000,
-    "fashion mnist": 12000
+    "fashion mnist": 12000,
+    "abalone": 400,
+    "cpusmall": 800,
+    "boston": 800,
+    "diabetes": 400
 }
