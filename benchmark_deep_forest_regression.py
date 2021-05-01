@@ -11,6 +11,7 @@ if __name__ == "__main__":
     n_bins = 255
     bin_subsample = 2e5
     max_layers = 10
+    criterion = "mse"
     n_estimators = 2
     n_trees = 100
     max_depth = None
@@ -39,6 +40,7 @@ if __name__ == "__main__":
                 n_bins=n_bins,
                 bin_subsample=bin_subsample,
                 max_layers=max_layers,
+                criterion=criterion,
                 n_estimators=n_estimators,
                 n_trees=n_trees,
                 max_depth=max_depth,

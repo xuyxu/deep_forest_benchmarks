@@ -15,14 +15,14 @@ mem = Memory('./cache')
 def load_all():
     
     load_dict = {
-        'ijcnn1': load_ijcnn1,
+        # 'ijcnn1': load_ijcnn1,
         'pendigits': load_pendigits,
         'letter': load_letter,
         'connect-4': load_connect,
         'sector': load_sector,
         'covtype': load_covtype,
-        'susy': load_susy,
-        'higgs': load_higgs,
+        # 'susy': load_susy,
+        # 'higgs': load_higgs,
         'usps': load_usps,
         'mnist': load_mnist,
         'fashion mnist': load_fashionmnist
@@ -34,10 +34,11 @@ def load_all():
 def load_regression_all():
 
     load_dict = {
-        "abalone": load_abalone,
-        "cpusmall": load_cpusmall,
-        "boston": load_boston_wrap,
-        "diabetes": load_diabetes_wrap
+        "wine": load_wine,
+        # "abalone": load_abalone,
+        # "cpusmall": load_cpusmall,
+        # "boston": load_boston_wrap,
+        # "diabetes": load_diabetes_wrap
     }
 
     return load_dict
@@ -49,8 +50,8 @@ def load_regression_all():
 
 
 def load_ijcnn1():
-    train = load_svmlight_file('../../Dataset/LIBSVM/ijcnn1_training')
-    test = load_svmlight_file('../../Dataset/LIBSVM/ijcnn1_testing')
+    train = load_svmlight_file('../Dataset/LIBSVM/ijcnn1_training')
+    test = load_svmlight_file('../Dataset/LIBSVM/ijcnn1_testing')
     
     X_train, X_test = train[0].toarray(), test[0].toarray()
     y_train, y_test = (train[1]+1) / 2, (test[1]+1) / 2  # {-1, 1} -> {0, 1}
@@ -60,8 +61,8 @@ def load_ijcnn1():
 
 
 def load_pendigits():
-    train = load_svmlight_file('../../Dataset/LIBSVM/pendigits_training')
-    test = load_svmlight_file('../../Dataset/LIBSVM/pendigits_testing')
+    train = load_svmlight_file('../Dataset/LIBSVM/pendigits_training')
+    test = load_svmlight_file('../Dataset/LIBSVM/pendigits_testing')
     
     X_train, X_test = train[0].toarray(), test[0].toarray()
     y_train, y_test = train[1], test[1]
@@ -71,8 +72,8 @@ def load_pendigits():
 
 
 def load_letter():
-    train = load_svmlight_file('../../Dataset/LIBSVM/letter_training')
-    test = load_svmlight_file('../../Dataset/LIBSVM/letter_testing')
+    train = load_svmlight_file('../Dataset/LIBSVM/letter_training')
+    test = load_svmlight_file('../Dataset/LIBSVM/letter_testing')
     
     X_train, X_test = train[0].toarray(), test[0].toarray()
     y_train, y_test = train[1]-1, test[1]-1  # [1, 26] -> [0, 25]
@@ -82,7 +83,7 @@ def load_letter():
 
 
 def load_connect():
-    data = load_svmlight_file('../../Dataset/LIBSVM/connect-4')
+    data = load_svmlight_file('../Dataset/LIBSVM/connect-4')
     X = data[0].toarray()
     y = data[1]
     
@@ -94,8 +95,8 @@ def load_connect():
 
 
 def load_sector():
-    train = load_svmlight_file('../../Dataset/LIBSVM/sector_training')
-    test = load_svmlight_file('../../Dataset/LIBSVM/sector_testing')
+    train = load_svmlight_file('../Dataset/LIBSVM/sector_training')
+    test = load_svmlight_file('../Dataset/LIBSVM/sector_testing')
     
     X_train, X_test = train[0].toarray(), test[0].toarray()
     y_train, y_test = train[1]-1, test[1]-1
@@ -105,7 +106,7 @@ def load_sector():
 
 
 def load_covtype():
-    data = load_svmlight_file('../../Dataset/LIBSVM/covtype')
+    data = load_svmlight_file('../Dataset/LIBSVM/covtype')
     X = data[0].toarray()
     y = data[1]
     
@@ -118,7 +119,7 @@ def load_covtype():
 
 @mem.cache
 def load_susy(subsample=False, subsample_size=1000000, random_state=0):
-    data = load_svmlight_file('../../Dataset/LIBSVM/SUSY')
+    data = load_svmlight_file('../Dataset/LIBSVM/SUSY')
     X = np.asanyarray(data[0].toarray(), order='C')
     y = data[1]
     
@@ -140,7 +141,7 @@ def load_susy(subsample=False, subsample_size=1000000, random_state=0):
 
 @mem.cache
 def load_higgs(subsample=False, subsample_size=1000000, random_state=0):
-    data = load_svmlight_file('../../Dataset/LIBSVM/HIGGS')
+    data = load_svmlight_file('../Dataset/LIBSVM/HIGGS')
     X = np.asanyarray(data[0].toarray(), order='C')
     y = data[1]
 
@@ -161,8 +162,8 @@ def load_higgs(subsample=False, subsample_size=1000000, random_state=0):
 
 
 def load_usps():
-    train = load_svmlight_file('../../Dataset/LIBSVM/usps_training')
-    test = load_svmlight_file('../../Dataset/LIBSVM/usps_testing')
+    train = load_svmlight_file('../Dataset/LIBSVM/usps_training')
+    test = load_svmlight_file('../Dataset/LIBSVM/usps_testing')
     
     X_train, X_test = train[0].toarray(), test[0].toarray()
     y_train, y_test = train[1]-1, test[1]-1  # [1, 10] -> [0, 9]
@@ -197,8 +198,8 @@ def load_fashionmnist():
 
 
 def load_news():
-    train = load_svmlight_file('../../Dataset/LIBSVM/news20_training')
-    test = load_svmlight_file('../../Dataset/LIBSVM/news20_testing')
+    train = load_svmlight_file('../Dataset/LIBSVM/news20_training')
+    test = load_svmlight_file('../Dataset/LIBSVM/news20_testing')
     
     X_train, X_test = train[0].toarray(), test[0].toarray()
     y_train, y_test = train[1]-1, test[1]-1  # [1, 10] -> [0, 9]
@@ -220,8 +221,8 @@ def load_cifar10():
 
 @mem.cache
 def load_epsilon():
-    train = load_svmlight_file('../../Dataset/LIBSVM/epsilon_training')
-    test = load_svmlight_file('../../Dataset/LIBSVM/epsilon_testing')
+    train = load_svmlight_file('../Dataset/LIBSVM/epsilon_training')
+    test = load_svmlight_file('../Dataset/LIBSVM/epsilon_testing')
 
     X_train, X_test = train[0].toarray(), test[0].toarray()
     y_train, y_test = train[1]-1, test[1]-1
@@ -236,7 +237,7 @@ def load_aloi(test_size=0.33, random_state=0):
         msg = '`test_size` should be in the range (0, 1), but got {} instead.'
         raise ValueError(msg.format(test_size))
     
-    data = load_svmlight_file('../../Dataset/LIBSVM/aloi')
+    data = load_svmlight_file('../Dataset/LIBSVM/aloi')
     X = data[0].toarray()
     y = data[1]
     
@@ -251,6 +252,17 @@ def load_aloi(test_size=0.33, random_state=0):
 # Regression Datasets
 # ============================================================================
 
+
+def load_wine():
+    data = pd.read_csv('../Dataset/winequality-red.csv')
+    data = data.to_numpy()
+    X = np.asanyarray(data[:, :-1], order='C')
+    y = data[:, -1]
+
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.33, random_state=0)
+
+    return X_train, y_train, X_test, y_test
 
 def load_abalone():
     data = load_svmlight_file('../Dataset/LIBSVM/abalone')
